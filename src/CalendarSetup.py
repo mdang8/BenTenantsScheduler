@@ -1,5 +1,6 @@
 import os
 import json
+from time import sleep
 from datetime import datetime
 from datetime import timedelta
 from pprint import pprint
@@ -9,8 +10,8 @@ from Calendar import Calendar
 
 class CalendarSetup:
     # beginning and end dates to start frequency counting at
-    START_DATE = '2019-03-11'
-    END_DATE = '2019-03-18'
+    FIRST_START_DATE = datetime(2019, 3, 11)  # 03/11/2019
+    FIRST_END_DATE = datetime(2019, 3, 18)  # 03/18/2019
     CALENDARS_INFO_FILE = os.path.abspath('configs/calendars.json')
     TENANTS_INFO_FILE = os.path.abspath('configs/tenants_info.json')
     available_calendars = None
@@ -35,7 +36,10 @@ class CalendarSetup:
         self.calendar.set_calendar_id(calendar_id)
         self.calendar.clear_all_events()
         driveway_events = self.create_driveway_schedule()
-        pprint(driveway_events)
+        for event in driveway_events:
+            created_event = self.calendar.create_event(event)
+            pprint(created_event)
+            sleep(1)
 
 
     def find_calendar_id(self, name):
@@ -45,17 +49,18 @@ class CalendarSetup:
 
 
     # Creates an event object to be used in an calendar event creation request.
-    def build_driveway_event(self, tenant_pair):
+    def build_driveway_event(self, tenant_pair, start_date, end_date, color_id):
+        date_format = '%Y-%m-%d'
         # RRULE string for every 3 weeks frequency until 09/01/2019
-        rrule = 'FREQ=WEEKLY;BYDAY=MO;INTERVAL=3;UNTIL=20190901T040000Z'
+        rrule = 'FREQ=WEEKLY;BYDAY=MO;INTERVAL=5;UNTIL=20190901T040000Z'
         event = {
             'summary': '[ {} + {} ] - out on the streetz'.format(tenant_pair[0], tenant_pair[1]),
             'start': {
-                'date': self.START_DATE,
+                'date': start_date.strftime(date_format),
                 'timeZone': 'America/New_York'
             },
             'end': {
-                'date': self.END_DATE,
+                'date': end_date.strftime(date_format),
                 'timeZone': 'America/New_York'
             },
             'recurrence': [
@@ -69,7 +74,8 @@ class CalendarSetup:
                 'overrides': [
                     { 'method': 'email', 'minutes': 24 * 60 }
                 ]
-            }
+            },
+            'colorId': color_id
         }
         return event
 
@@ -77,8 +83,14 @@ class CalendarSetup:
     def create_driveway_schedule(self):
         tenant_pairs = self.shifting_pairings()
         events = []
+        start_date = self.FIRST_START_DATE
+        end_date = self.FIRST_END_DATE
+        color_id = 1
         for tenant_pair in tenant_pairs:
-            events.append(self.build_driveway_event(tenant_pair))
+            events.append(self.build_driveway_event(tenant_pair, start_date, end_date, str(color_id)))
+            start_date = start_date + timedelta(days=7)
+            end_date = start_date + timedelta(days=7)
+            color_id = (color_id + 1) % 11
         return events
 
 

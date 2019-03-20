@@ -47,21 +47,6 @@ class Calendar:
         return events
 
 
-    def get_upcoming_ten_events(self):
-        now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-        print('Getting the upcoming 10 events')
-        events_result = service.events().list(calendarId='primary', timeMin=now,
-                                            maxResults=10, singleEvents=True,
-                                            orderBy='startTime').execute()
-        events = events_result.get('items', [])
-
-        if not events:
-            print('No upcoming events found.')
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
-
-
     # Makes a request to create an event in the calendar and returns an Event resource.
     def create_event(self, event_data):
         event = self.service.events().insert(calendarId=self.id, body=event_data).execute()
