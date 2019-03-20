@@ -20,7 +20,7 @@ class Calendar:
 
 
     # Sets the current calendar id to a new value. Changes the calendar to interact with.
-    def set_calendar_id(id):
+    def set_calendar_id(self, id):
         self.id = id
         return self.id
 
