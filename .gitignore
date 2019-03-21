@@ -1,4 +1,2 @@
 venv/
-configs/*
 src/__pycache__
-

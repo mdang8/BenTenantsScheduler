@@ -49,7 +49,10 @@ class Calendar:
 
     # Makes a request to create an event in the calendar and returns an Event resource.
     def create_event(self, event_data):
-        event = self.service.events().insert(calendarId=self.id, body=event_data).execute()
+        event = self.service.events().insert(
+            calendarId=self.id,
+            sendNotifications=True,
+            body=event_data).execute()
         return event
 
 

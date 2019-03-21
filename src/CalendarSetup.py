@@ -67,7 +67,8 @@ class CalendarSetup:
                 'RRULE:{}'.format(rrule)
             ],
             'attendees': [
-                # { 'email': tenant_email }
+                { 'email': self.tenants_data[tenant_pair[0]]['email'] },
+                { 'email': self.tenants_data[tenant_pair[1]]['email'] }
             ],
             'reminders': {
                 'useDefault': False,
