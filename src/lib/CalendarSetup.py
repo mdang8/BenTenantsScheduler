@@ -4,20 +4,19 @@ from time import sleep
 from datetime import datetime
 from datetime import timedelta
 from pprint import pprint
-from Authorize import Authorize
-from Calendar import Calendar
+from src.lib.Authorize import Authorize
+from src.lib.Calendar import Calendar
 
 
 class CalendarSetup:
     # beginning and end dates to start frequency counting at
     FIRST_START_DATE = datetime(2019, 3, 11)  # 03/11/2019
     FIRST_END_DATE = datetime(2019, 3, 18)  # 03/18/2019
-    CALENDARS_INFO_FILE = os.path.abspath('configs/calendars.json')
-    TENANTS_INFO_FILE = os.path.abspath('configs/tenants_info.json')
+    CALENDARS_INFO_FILE = os.path.abspath('src/configs/calendars.json')
+    TENANTS_INFO_FILE = os.path.abspath('src/configs/tenants_info.json')
     available_calendars = None
     tenants_data = None
     calendar = None
-
 
     def __init__(self):
         with open(self.CALENDARS_INFO_FILE) as f:
@@ -30,7 +29,6 @@ class CalendarSetup:
         creds = auth.create_token()
         self.calendar = Calendar(creds, '')
 
-
     def setup_new_driveway_schedule(self):
         calendar_id = self.find_calendar_id('BenTenants Driveway Schedule')
         self.calendar.set_calendar_id(calendar_id)
@@ -41,12 +39,10 @@ class CalendarSetup:
             pprint(created_event)
             sleep(1)
 
-
     def find_calendar_id(self, name):
         calendar_id = next(filter(
             lambda x: x['name'] == name, self.available_calendars))['id']
         return calendar_id
-
 
     # Creates an event object to be used in an calendar event creation request.
     def build_driveway_event(self, tenant_pair, start_date, end_date, color_id):
@@ -80,7 +76,6 @@ class CalendarSetup:
         }
         return event
 
-
     def create_driveway_schedule(self):
         tenant_pairs = self.shifting_pairings()
         events = []
@@ -94,7 +89,6 @@ class CalendarSetup:
             color_id = (color_id + 1) % 11
         return events
 
-
     # Transforms the tenants info object to have the parking order number as the keys for better
     # retrieval.
     def order_number_as_keys(self):
@@ -102,7 +96,6 @@ class CalendarSetup:
         for tenant in self.tenants_data:
             ordered_tenants_info[self.tenants_data[tenant]['parking_order']] = tenant
         return ordered_tenants_info
-
 
     # Determines all of the possible pairings of tenants out on the streets. Each tenant has a
     # a pre-assigned order number between 0 and 4 (5 tenants total). Pairings are determined by
@@ -123,4 +116,3 @@ class CalendarSetup:
             if p1 == 0 and p2 == 1:
                 break
         return pairings
-

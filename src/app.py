@@ -1,14 +1,15 @@
-import os
+import os, sys
 import json
-from pprint import pprint
-from CalendarSetup import CalendarSetup
-from MessagesClient import MessagesClient
+from src.flaskr import create_app
+from src.lib.CalendarSetup import CalendarSetup
 
 
-def main():
-    calendar_setup = CalendarSetup()
-    messages_client = MessagesClient()
-    # calendar_setup.setup_new_driveway_schedule()
+def main(setup=False):
+    app = create_app()
+    if setup:
+        calendar_setup = CalendarSetup()
+        calendar_setup.setup_new_driveway_schedule()
+    return app
 
 
 if __name__ == '__main__':

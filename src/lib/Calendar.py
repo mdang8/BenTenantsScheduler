@@ -1,7 +1,4 @@
-import os
-import datetime
 from time import sleep
-from pprint import pprint
 from googleapiclient.discovery import build
 
 
@@ -12,18 +9,15 @@ class Calendar:
     id = None
     calendars_info = {}
 
-
     def __init__(self, creds, calendar_id):
         self.creds = creds
         self.service = build('calendar', 'v3', credentials=creds)
         self.id = calendar_id
 
-
     # Sets the current calendar id to a new value. Changes the calendar to interact with.
     def set_calendar_id(self, id):
         self.id = id
         return self.id
-
 
     # Makes a request to retrieve all pages of events and returns a single list containing
     # info for all events.
@@ -46,7 +40,6 @@ class Calendar:
 
         return events
 
-
     # Makes a request to create an event in the calendar and returns an Event resource.
     def create_event(self, event_data):
         event = self.service.events().insert(
@@ -54,7 +47,6 @@ class Calendar:
             sendNotifications=True,
             body=event_data).execute()
         return event
-
 
     # Deletes all of the events in the current calendar.
     def clear_all_events(self):
