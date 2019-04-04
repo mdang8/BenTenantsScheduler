@@ -1,7 +1,10 @@
 import os, sys
 import json
+from dotenv import load_dotenv
 from src.flaskr import create_app
 from src.lib.CalendarSetup import CalendarSetup
+
+load_dotenv()
 
 
 def main(setup=False):

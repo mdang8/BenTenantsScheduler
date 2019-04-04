@@ -1,21 +1,15 @@
 import os
-import json
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
 
 class MessagesClient:
-    TWILIO_CONFIG_FILE = os.path.abspath('src/configs/twilio_credentials.json')
     client = None
     phone_from = ""
 
     def __init__(self):
-        with open(self.TWILIO_CONFIG_FILE) as f:
-            twilio_creds = json.load(f)
-            f.close()
-
-        self.client = Client(twilio_creds['account_sid'], twilio_creds['auth_token'])
-        self.phone_from = twilio_creds['phone_number']
+        self.client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+        self.phone_from = os.getenv('TWILIO_PHONE_NUMBER')
 
     def send(self, message_body, phone_to):
         message = self.client.messages \
