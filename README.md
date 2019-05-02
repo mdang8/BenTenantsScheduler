@@ -53,6 +53,17 @@ Configures various apartment schedules for the BenTenants using Google Calendar 
 }
 ```
 
+## Setup Notes
+
+MongoDB:
+
+  - `docker pull mongo:4.1`
+  - `docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.1`
+  
+Webapp:
+
+  - `docker-compose up`
+
 ## TODO
 
 - Move configs to `.env` file
