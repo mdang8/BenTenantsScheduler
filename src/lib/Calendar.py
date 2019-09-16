@@ -59,5 +59,30 @@ class Calendar:
                     res = self.service.events().delete(calendarId=self.id, eventId=event['id']).execute()
                 except:
                     print('An error occurred while deleting the event.')
-                sleep(1)
+                sleep(0.5)
 
+    def patch_event(self, event_id, event_data):
+        event = self.service.events().patch(
+            calendarId=self.id,
+            eventId=event_id,
+            body=event_data).execute()
+        return event
+
+    def renew_all_events(self, end_year):
+        events = self.get_all_events()
+        if len(events) == 0:
+            print('No events to update.')
+        else:
+            rrule = f'FREQ=WEEKLY;BYDAY=MO;INTERVAL=5;UNTIL={end_year}0901T040000Z'
+            event_data = {
+                'recurrence': [
+                    f'RRULE:{rrule}'
+                ]
+            }
+            for event in events:
+                print(event)
+                try:
+                    res = self.patch_event(event['id'], event_data)
+                except Exception as e:
+                    print(f'An error occurred while updating the event: {e}')
+                sleep(0.5)
