@@ -3,6 +3,8 @@
 venv/
 data/
 **/__pycache__
+ENV_DIR*
 .env
 *.pyc
-
+.DS_Store
+cloud_deploy*

@@ -11,8 +11,8 @@ SCOPES = {
 
 
 class Authorize:
-    token_file = os.path.abspath('src/configs/token.pickle')
-    credentials_file = os.path.abspath('src/configs/credentials.json')
+    token_file = os.path.abspath('configs/token.pickle')
+    credentials_file = os.path.abspath('configs/credentials.json')
     scopes = []
 
     def __init__(self, scopes):
