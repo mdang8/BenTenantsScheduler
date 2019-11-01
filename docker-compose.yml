@@ -2,31 +2,39 @@ version: "3.7"
 
 services:
   web:
-    build: ./
-    container_name: "bentenants-scheduler"
+    image: bentenants-scheduler
+    hostname: bentenants-scheduler
     ports:
-      - "5000:5000"
+      - target: 5000
+        published: 5050
+        protocol: tcp
     volumes:
-      - .:/flask_app
+      - type: volume
+        source: /
     networks:
-      - db-network
+      - bentenants
 
   mongo:
     image: mongo:4.1
-    container_name: "mongodb"
+    hostname: mongodb
+    container_name: mongodb
     restart: always
     ports:
-      - 27017:27017
+      - target: 27017
+        published: 27017
+        protocol: tcp
     environment:
 #      MONGO_INITDB_ROOT_USERNAME: "root"
 #      MONGO_INITDB_ROOT_PASSWORD: "root"
-      MONGO_DATA_DIR: "/data/db"
-      MONGO_LOG_DIR: "/dev/null"
+      MONGO_DATA_DIR: /data/db
+      MONGO_LOG_DIR: /dev/null
     volumes:
-      - ./data/db:/data/db
+      - type: volume
+        source: /data/db
+        target: /data/db
     networks:
-      - db-network
+      - bentenants
     command: mongod --noauth
 
 networks:
-  db-network:
+  bentenants:

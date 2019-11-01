@@ -1,10 +1,10 @@
 import os
 import json
+import src.lib.Calendar as Calendar
 from time import sleep
 from datetime import timedelta
 from pprint import pprint
 from src.lib.Authorize import Authorize
-from src.lib.Calendar import Calendar
 
 
 class CalendarSetup:
@@ -15,7 +15,6 @@ class CalendarSetup:
     TENANTS_INFO_FILE = os.path.abspath('src/configs/tenants_info.json')
     available_calendars = None
     tenants_data = None
-    calendar = None
     chores = ['Trash/Recycling', 'Dishwasher', 'Kitchen Counter-tops', 'Kitchen Floor', 'Stove-tops']
 
     def __init__(self, first_start_date, first_end_date):
@@ -29,22 +28,15 @@ class CalendarSetup:
         self.FIRST_END_DATE = first_end_date
         auth = Authorize(['write'])
         creds = auth.create_token()
-        self.calendar = Calendar(creds, '')
 
     def setup_new_schedule(self, calendar_name, test=False):
-        calendar_id = self.find_calendar_id(calendar_name) if not test else self.find_calendar_id('Test')
-        self.calendar.set_calendar_id(calendar_id)
-        self.calendar.clear_all_events()
+        calendar_id = Calendar.find_calendar_id(calendar_name) if not test else Calendar.find_calendar_id('Test')
+        Calendar.clear_all_events(calendar_id)
         events = self.create_chore_schedule() if calendar_name == 'BenTenants' else self.create_driveway_schedule()
         for event in events:
-            created_event = self.calendar.create_event(event)
+            created_event = Calendar.create_event(calendar_id, event)
             pprint(created_event)
             sleep(0.5)
-
-    # Finds the ID of the calendar associated with the given name.
-    def find_calendar_id(self, name):
-        calendar_id = next(filter(lambda x: x['name'] == name, self.available_calendars))['id']
-        return calendar_id
 
     # Creates an event object to be used in an calendar event creation request.
     def build_driveway_event(self, tenant_pair, start_date, end_date, color_id):
@@ -148,9 +140,8 @@ class CalendarSetup:
         return events
 
     def renew_events_end_date(self, calendar_name, end_year='2020'):
-        calendar_id = self.find_calendar_id(calendar_name)
-        self.calendar.set_calendar_id(calendar_id)
-        self.calendar.renew_all_events(end_year)
+        calendar_id = Calendar.find_calendar_id(calendar_name)
+        Calendar.renew_all_events(calendar_id, end_year)
 
     # Transforms the tenants info object to have the parking order number as the keys for better
     # retrieval.
