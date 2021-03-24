@@ -27,7 +27,7 @@ python-dotenv==0.10.1
 pytz==2018.9
 requests==2.21.0
 requests-oauthlib==1.2.0
-rsa==4.0
+rsa==4.1
 six==1.11.0
 twilio==6.25.2
 uritemplate==3.0.0
